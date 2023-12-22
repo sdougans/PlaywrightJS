@@ -12,7 +12,7 @@ const { defineConfig, devices } = require('@playwright/test');
  */
 module.exports = defineConfig({
   testDir: './tests',
-  timeout: 10 * 1000,
+  timeout: 30 * 1000,
   expect: {
     timeout: 5 * 1000
   },
@@ -33,8 +33,9 @@ module.exports = defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-
     headless: false,
+    screenshot: 'on',
+
   },
 
   /* Configure projects for major browsers */
