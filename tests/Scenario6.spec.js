@@ -8,16 +8,26 @@ test.only('Login and shop test', async ({browser})=> {
     const page = await context.newPage();
 
     const locator_username = page.locator('#userEmail');
-    const locator_password = page.locator('#userPassworduserPassword');
+    const locator_password = page.locator('#userPassword');
     const locator_loginBtn = page.locator('#login');
 
-    await page.goto("https://rahulshettyacademy.com/client/auth/login");
-    await expect(page.locator('h1')).toContainText("Log in")
+    await page.goto("https://rahulshettyacademy.com/client/");
+    await expect(page.locator('.login-title')).toContainText("Log in")
 
     await locator_username.fill(myUsername);
     await locator_password.fill(myPassword);
-    await locator_username.click();
-    await expect(page.locator('h3')).toContainText("Automation")
+    await locator_loginBtn.click();
+    await expect(page.locator("#sidebar p")).toContainText("Home");
 
+    const locator_itemCards = page.locator(".card-body h5");
+    await expect(locator_itemCards.last()).toBeVisible();
+    const count = await locator_itemCards.count();
+    const randomProduct = Math.floor(Math.random() * count);
+    const productText = await locator_itemCards.nth(randomProduct).textContent();
+
+    const locator_viewButton = page.locator(".card-body").nth(randomProduct).locator("button").first();
+    await locator_viewButton.click();
+    await page.waitForURL("**/product-details/**");
+    await expect(page.locator("h2")).toHaveText(productText);
 
 });
