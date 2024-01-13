@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
  
-test.only('Playwright alerts and popups', async ({ page }) => {
+test('Playwright alerts and popups', async ({ page }) => {
   
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
 
