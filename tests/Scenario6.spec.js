@@ -3,7 +3,7 @@ const {test, expect} = require ('@playwright/test');
 const myUsername = "stuart.dougans@gmail.com";
 const myPassword = "HelloWorld";
 
-test.only('Login and shop test', async ({browser})=> {
+test('Login and shop test', async ({browser})=> {
     const context = await browser.newContext();
     const page = await context.newPage();
 
