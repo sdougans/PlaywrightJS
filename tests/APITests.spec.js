@@ -1,32 +1,29 @@
 import { test, expect, request } from '@playwright/test';
- 
+import { ApiUtils } from './utils/ApiUtils';
+
 const myUsername = "stuart.dougans@gmail.com";
 const myPassword = "HelloWorld";
-let token;
-
 const loginPayload = {userEmail:myUsername, userPassword: myPassword};
 const orderPayload = {orders:[{country:"United Kingdom",productOrderedId:"6581ca979fd99c85e8ee7faf"}]};
 
+let token;
+let apiUtils;
+
+let response;
+
 test.beforeAll('Login API', async () => {
+    
     const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login", {data:loginPayload});
-    expect(loginResponse.ok()).toBeTruthy();
-    const loginResponseJson = await loginResponse.json();
-    token = loginResponseJson.token;
+    apiUtils = new ApiUtils(apiContext, loginPayload);
+    token = await apiUtils.getToken();
+
+    // const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login", {data:loginPayload});
+    // expect(loginResponse.ok()).toBeTruthy();
+    // const loginResponseJson = await loginResponse.json();
+    // token = loginResponseJson.token;
 });
 
 test('API testing', async ( {page} ) => {
-
-    // const locator_username = page.locator('#userEmail');
-    // const locator_password = page.locator('#userPassword');
-    // const locator_loginBtn = page.locator('#login');
-
-    // await page.goto("https://rahulshettyacademy.com/client/");
-    // await expect(page.locator('.login-title')).toContainText("Log in")
-
-    // await locator_username.fill(myUsername);
-    // await locator_password.fill(myPassword);
-    // await locator_loginBtn.click();
 
     await page.addInitScript(value => {
         window.localStorage.setItem('token', value);
@@ -49,20 +46,6 @@ test('API testing', async ( {page} ) => {
 });
 
 test.only('Order test', async ({page}) => {
-    const apiContext = await request.newContext();
-    const orderResponse = await apiContext.post('https://rahulshettyacademy.com/api/ecom/order/create-order',
-        {
-            data: orderPayload,
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }
-        }
-    );
-
-    const orderJson = await orderResponse.json();
-    console.log(orderJson.orders[0]);
-    console.log(orderJson.productOrderId[0]);
-    console.log(orderJson.message);
-
+    response = await apiUtils.createOrder(orderPayload);
+    console.log(response.orderId);
 });
