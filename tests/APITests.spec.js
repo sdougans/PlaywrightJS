@@ -5,6 +5,7 @@ const myPassword = "HelloWorld";
 let token;
 
 const loginPayload = {userEmail:myUsername, userPassword: myPassword};
+const orderPayload = {orders:[{country:"United Kingdom",productOrderedId:"6581ca979fd99c85e8ee7faf"}]};
 
 test.beforeAll('Login API', async () => {
     const apiContext = await request.newContext();
@@ -14,7 +15,7 @@ test.beforeAll('Login API', async () => {
     token = loginResponseJson.token;
 });
 
-test.only('API testing', async ( {page} ) => {
+test('API testing', async ( {page} ) => {
 
     // const locator_username = page.locator('#userEmail');
     // const locator_password = page.locator('#userPassword');
@@ -45,4 +46,23 @@ test.only('API testing', async ( {page} ) => {
     await page.waitForURL("**/product-details/**");
     await expect(page.locator("h2")).toHaveText(productText);
  
+});
+
+test.only('Order test', async ({page}) => {
+    const apiContext = await request.newContext();
+    const orderResponse = await apiContext.post('https://rahulshettyacademy.com/api/ecom/order/create-order',
+        {
+            data: orderPayload,
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+
+    const orderJson = await orderResponse.json();
+    console.log(orderJson.orders[0]);
+    console.log(orderJson.productOrderId[0]);
+    console.log(orderJson.message);
+
 });
