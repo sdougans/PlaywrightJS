@@ -45,7 +45,7 @@ test('API testing', async ( {page} ) => {
  
 });
 
-test.only('Order test', async ({page}) => {
+test('Order test', async ({page}) => {
     response = await apiUtils.createOrder(orderPayload);
     console.log(response.orderId);
 });
