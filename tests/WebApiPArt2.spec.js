@@ -3,7 +3,9 @@ const { test, expect } = require("@playwright/test");
 const myUsername = "stuart.dougans@gmail.com";
 const myPassword = "HelloWorld";
 
-test.beforeAll("", async ({ browser }) => {
+let webContext;
+
+test.beforeAll("Get Web Context", async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
 
@@ -18,9 +20,23 @@ test.beforeAll("", async ({ browser }) => {
   await locator_loginBtn.click();
   await expect(page.locator("#sidebar p")).toContainText("Home");
   await context.storageState({ path: "state.json" });
+
+  webContext = await browser.newContext({storageState: 'state.json'});
+
 });
 
-test.only("Login", async ({ browser }) => {
-  // const context = await browser.newContext();
-  // const page = await context.newPage();
+test.only("Test login using Web Context", async () => {
+    const page = await webContext.newPage();
+    await page.goto("https://rahulshettyacademy.com/client/");
+
+    const locator_itemCards = page.locator(".card-body h5");
+    await expect(locator_itemCards.last()).toBeVisible();
+    const count = await locator_itemCards.count();
+    const randomProduct = Math.floor(Math.random() * count);
+    const productText = await locator_itemCards.nth(randomProduct).textContent();
+
+    const locator_viewButton = page.locator(".card-body").nth(randomProduct).locator("button").first();
+    await locator_viewButton.click();
+    await page.waitForURL("**/product-details/**");
+    await expect(page.locator("h2")).toHaveText(productText);
 });
