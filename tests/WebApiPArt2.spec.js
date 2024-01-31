@@ -25,7 +25,39 @@ test.beforeAll("Get Web Context", async ({ browser }) => {
 
 });
 
-test.only("Test login using Web Context", async () => {
+test("Test login using Web Context", async () => {
+    const page = await webContext.newPage();
+    await page.goto("https://rahulshettyacademy.com/client/");
+
+    const locator_itemCards = page.locator(".card-body h5");
+    await expect(locator_itemCards.last()).toBeVisible();
+    const count = await locator_itemCards.count();
+    const randomProduct = Math.floor(Math.random() * count);
+    const productText = await locator_itemCards.nth(randomProduct).textContent();
+
+    const locator_viewButton = page.locator(".card-body").nth(randomProduct).locator("button").first();
+    await locator_viewButton.click();
+    await page.waitForURL("**/product-details/**");
+    await expect(page.locator("h2")).toHaveText(productText);
+});
+
+test("Test login using Web Context 2", async () => {
+    const page = await webContext.newPage();
+    await page.goto("https://rahulshettyacademy.com/client/");
+
+    const locator_itemCards = page.locator(".card-body h5");
+    await expect(locator_itemCards.last()).toBeVisible();
+    const count = await locator_itemCards.count();
+    const randomProduct = Math.floor(Math.random() * count);
+    const productText = await locator_itemCards.nth(randomProduct).textContent();
+
+    const locator_viewButton = page.locator(".card-body").nth(randomProduct).locator("button").first();
+    await locator_viewButton.click();
+    await page.waitForURL("**/product-details/**");
+    await expect(page.locator("h2")).toHaveText(productText);
+});
+
+test("Test login using Web Context 3", async () => {
     const page = await webContext.newPage();
     await page.goto("https://rahulshettyacademy.com/client/");
 
